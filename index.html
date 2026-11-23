@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EvakuaPE por SismoTech — Plataforma de triaje sísmico visual y gestión de crisis ante desastres en el Perú." />
+  <title>EvakuaPE | SismoTech — Triaje Visual y Gestión de Crisis Sísmica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Leaflet CSS para mapa interactivo real (OpenStreetMap) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <!-- Nota: En estructura de carpetas de repositorio (pages/index.html), usar href="../css/styles.css" -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- =====================================================================
+       CABECERA GLOBAL RESPONSIVE CON MENÚ SÁNDWICH (3 LÍNEAS)
+       ===================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="#inicio" class="brand-logo" data-view-target="home" aria-label="EvakuaPE por SismoTech - Ir al inicio"><img class="brand-img" src="iconos/logo_evakuaPE.svg" alt="EvakuaPE by SismoTech" /></a>
+
+      <!-- Botón Menú Sándwich (3 líneas) visible al reducir pantalla -->
+      <button
+        type="button"
+        class="hamburger-btn"
+        id="hamburger-btn"
+        aria-label="Abrir menú de navegación"
+        aria-expanded="false"
+        aria-controls="primary-nav-drawer"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Navegación Principal + Controles (Se colapsa en menú sándwich en tablet/móvil) -->
+      <div class="nav-drawer" id="primary-nav-drawer">
+        <nav class="main-nav" aria-label="Navegación principal">
+          <ul class="nav-list">
+            <li><button type="button" class="nav-link active" data-view-target="home" data-scroll="inicio">Inicio</button></li>
+            <li><button type="button" class="nav-link" data-view-target="home" data-scroll="problema">El Problema</button></li>
+            <li><button type="button" class="nav-link" data-view-target="home" data-scroll="solucion">La Solución</button></li>
+            <li><button type="button" class="nav-link" data-view-target="home" data-scroll="guia-visual">Guía Visual</button></li>
+            <li><button type="button" class="nav-link nav-pill-coe" data-view-target="indeci">Defensa Civil <span class="nav-counter" id="nav-reports-badge">6</span></button></li>
+            <li><button type="button" class="nav-link" data-view-target="rescatista">Brigadistas</button></li>
+          </ul>
+        </nav>
+
+        <div class="header-controls">
+          <button
+            type="button"
+            id="btn-toggle-network"
+            class="status-pill status-online"
+            aria-pressed="false"
+            title="Simular estado de conexión tras un sismo"
+          >
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="network-label">Red Activa</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-high-contrast"
+            class="btn-contrast"
+            aria-pressed="false"
+            title="Activar Modo Alto Contraste contra reflejo solar"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M12 3A9 9 0 0 0 12 21V3Z" fill="currentColor"/>
+            </svg>
+            <span>Alto Contraste</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- =====================================================================
+         PANTALLA 1: LANDING PAGE PRINCIPAL (HOME)
+         Prototipo Figma: Segmento Ciudadano (Botón Gigante Rojo) a la izquierda
+         y Acceso Institucional (Defensa Civil / Brigadistas) a su costado.
+         ===================================================================== -->
+    <div id="view-home" class="app-view active">
+      <section id="inicio" class="hero-section">
+        <div class="container">
+          <h1 class="welcome-title">Bienvenido</h1>
+          <div class="welcome-grid">
+            <div class="welcome-card">
+              <h2>Sistema de evaluación rápida de daños post-sismo</h2>
+              <p>Identifica señales visibles de daño en tu vivienda después de un sismo. EvakuaPE te orienta para registrar lo que observas y actuar con precaución.</p>
+              <p class="welcome-note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#0056B3" stroke-width="2"/><path d="M12 11V16M12 8H12.01" stroke="#0056B3" stroke-width="2.4" stroke-linecap="round"/></svg><span>La evaluación rápida orienta; no certifica la seguridad estructural ni reemplaza una inspección profesional.</span></p>
+              <button type="button" class="btn btn-institutional btn-massive btn-block" data-view-target="home" data-scroll="problema"><span>CONOCE EVAKUAPE &rarr;</span></button>
+            </div>
+            <figure class="welcome-figure">
+              <img src="imagenes/imagen_bienvenida.jpg" alt="Edificación dañada por un sismo en el Perú" />
+              <figcaption><strong>Tu seguridad es lo primero</strong><span>Observa desde un lugar seguro. No ingreses a una edificación dañada.</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="ciudadano" class="citizen-section">
+        <div class="container">
+          <span class="eyebrow-plain">EVALUACIÓN RÁPIDA POST-SISMO</span>
+          <h2 class="citizen-title">¿Su vivienda sufrió daños?</h2>
+          <p class="citizen-sub">Reporte desde un lugar seguro. No necesita una cuenta.</p>
+          <div class="figma-split-grid">
+            <div class="citizen-col">
+              <div class="net-card" id="home-net-card">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/></svg>
+                <div><strong id="home-net-title">Red disponible</strong><span id="home-net-text">Puede enviar su reporte.</span></div>
+              </div>
+              <button type="button" id="btn-start-emergency" class="giant-report-btn">
+                <svg width="72" height="72" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 10v4h3l8 4.5V5.5L6 10H3z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M17 9a4 4 0 0 1 0 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <span>REPORTAR<br />EMERGENCIA</span>
+              </button>
+              <p class="steps-line">1. Foto de fachada &nbsp;&nbsp; 2. Detalle &nbsp;&nbsp; 3. Evaluación</p>
+            </div>
+            <aside class="inst-card" id="acceso-institucional" aria-label="Acceso institucional">
+              <h2>Acceso institucional</h2>
+              <p>Herramientas de campo para brigadistas y autoridades INDECI.</p>
+              <button type="button" id="btn-go-rescuer" class="inst-btn inst-btn-dark">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L4 5V11C4 16.55 7.41 21.74 12 23C16.59 21.74 20 16.55 20 11V5L12 2Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>ACCESO PARA RESCATISTAS</span>
+              </button>
+              <button type="button" id="btn-go-indeci" class="inst-btn inst-btn-blue"><span>ACCESO COE · INDECI</span></button>
+              <div class="inst-warning">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L22 20H2L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10V14M12 17H12.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <div><strong>Primero, póngase a salvo</strong><span>Aléjese de fachadas, cables y objetos que puedan caer.</span></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      
+<!-- SECCIÓN: EL PROBLEMA -->
+      <section id="problema" class="section section-alt">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-tag">PROBLEMÁTICA EN EL CINTURÓN DE FUEGO DEL PACÍFICO</span>
+            <h2>¿Por qué colapsa la respuesta tras un sismo de gran magnitud?</h2>
+            <p>
+              La falta de criterios técnicos sencillos y el estrés agudo provocan saturación en las centrales de emergencia y retrasos críticos en el rescate.
+            </p>
+          </div>
+
+          <div class="cards-grid-3">
+            <article class="info-card">
+              <div class="card-icon-wrap icon-red" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.53 21H20.47A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="#D32F2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3>1. Brecha Técnica y Falsas Alarmas</h3>
+              <p>
+                Los ciudadanos confunden la caída superficial de tarrajeo o pintura con fallas estructurales en vigas y columnas, saturando las líneas telefónicas y desviando brigadas vitales.
+              </p>
+            </article>
+
+            <article class="info-card">
+              <div class="card-icon-wrap icon-blue" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="#0056B3" stroke-width="2.5"/>
+                  <path d="M12 7V12L15.5 14" stroke="#0056B3" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3>2. Reducción Cognitiva y Motora</h3>
+              <p>
+                El pánico y los temblores en las manos impiden leer formularios extensos o escribir descripciones detalladas en teclados pequeños durante los primeros minutos de crisis.
+              </p>
+            </article>
+
+            <article class="info-card">
+              <div class="card-icon-wrap icon-green" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M1 1L23 23M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55A10.94 10.94 0 0 1 10.17 10.72M12 20H12.01" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3>3. Apagón Informativo en Zona Cero</h3>
+              <p>
+                La interrupción de redes móviles deja incomunicados a afectados y rescatistas, obligando a operar con fichas físicas bajo polvo, réplicas y reflejo solar intenso.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: LA SOLUCIÓN OMNICANAL -->
+      <section id="solucion" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-tag">ARQUITECTURA CENTRADA EN EL HUMANO</span>
+            <h2>Tres entornos diseñados para cada actor de la emergencia</h2>
+            <p>
+              Cada módulo de EvakuaPE se adapta a las capacidades físicas, cognitivas y operativas de quienes enfrentan el desastre.
+            </p>
+          </div>
+
+          <div class="cards-grid-3">
+            <article class="segment-card border-top-red">
+              <span class="segment-pill pill-red">CIUDADANOS</span>
+              <h3>Reporte Visual Guiado</h3>
+              <ul class="check-list">
+                <li><strong>Mapa interactivo:</strong> Geolocalización instantánea o búsqueda por dirección.</li>
+                <li><strong>Evidencia fotográfica:</strong> Carga guiada de fachada panorámica y detalle de grieta.</li>
+                <li><strong>Tarjetas visuales:</strong> Identificación sin teclado mediante referencias cotidianas.</li>
+                <li><strong>Modo Offline:</strong> Respaldo local automático ante caída de señal.</li>
+              </ul>
+              <button type="button" class="btn btn-danger btn-block" data-view-target="report">INICIAR REPORTE</button>
+            </article>
+
+            <article class="segment-card border-top-blue">
+              <span class="segment-pill pill-blue">DEFENSA CIVIL (COE)</span>
+              <h3>Triaje Remoto en Tiempo Real</h3>
+              <ul class="check-list">
+                <li><strong>Mapa de incidencias y Heatmap:</strong> Detección visual de zonas críticas.</li>
+                <li><strong>Priorización automática:</strong> Ordena emergencias por nivel de riesgo estructural.</li>
+                <li><strong>Filtro de falsas alarmas:</strong> Aísla daños estéticos de colapsos inminentes.</li>
+                <li><strong>Despacho de brigadas:</strong> Asignación directa y exportación de reportes CSV.</li>
+              </ul>
+              <button type="button" class="btn btn-institutional btn-block" data-view-target="indeci">ABRIR PANEL COE</button>
+            </article>
+
+            <article class="segment-card border-top-green">
+              <span class="segment-pill pill-green">INGENIEROS Y BRIGADISTAS</span>
+              <h3>Operatividad en Zona Cero</h3>
+              <ul class="check-list">
+                <li><strong>Modo Alto Contraste:</strong> Legibilidad óptima bajo luz solar directa.</li>
+                <li><strong>Controles amplios:</strong> Botones de ancho completo operables con guantes gruesos.</li>
+                <li><strong>Validación EDAN:</strong> Confirmación o descarte en campo en un solo toque.</li>
+                <li><strong>Actualización central:</strong> Sincronización inmediata con el panel de Defensa Civil.</li>
+              </ul>
+              <button type="button" class="btn btn-success btn-block" data-view-target="rescatista">ABRIR CONSOLA</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: GUÍA VISUAL COMPARATIVA DE TRIAJE -->
+      <section id="guia-visual" class="section section-alt">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-tag">CRITERIOS DE INGENIERÍA CIVIL SIMPLIFICADOS</span>
+            <h2>Guía Visual para Identificar el Nivel de Riesgo</h2>
+            <p>
+              Cada indicador combina código de color, geometría iconográfica explícita y descripción clara para garantizar accesibilidad total.
+            </p>
+          </div>
+
+          <div class="guide-grid">
+            <div class="guide-card guide-critical">
+              <div class="guide-badge-row">
+                <span class="guide-level level-critical">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L22 20H2L12 2Z" stroke="currentColor" stroke-width="2.5"/></svg>
+                  RIESGO VITAL · PRIORIDAD ALTA
+                </span>
+              </div>
+              <h3>Grieta Diagonal o en Forma de "X"</h3>
+              <p>Rajaduras diagonales cruzadas en columnas o muros portantes. Indican falla por corte estructural e inminente peligro de colapso ante réplicas.</p>
+              <div class="guide-action-note">Protocolo: Evacuación inmediata y alerta prioritaria a Defensa Civil.</div>
+            </div>
+
+            <div class="guide-card guide-critical">
+              <div class="guide-badge-row">
+                <span class="guide-level level-critical">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L22 20H2L12 2Z" stroke="currentColor" stroke-width="2.5"/></svg>
+                  RIESGO VITAL · PRIORIDAD ALTA
+                </span>
+              </div>
+              <h3>Fierros de Construcción Expuestos</h3>
+              <p>Desprendimiento profundo del concreto que deja al descubierto las varillas de acero o estribos deformados en vigas o columnas.</p>
+              <div class="guide-action-note">Protocolo: Prohibido reingresar; requiere inspección de brigada estructural.</div>
+            </div>
+
+            <div class="guide-card guide-warning">
+              <div class="guide-badge-row">
+                <span class="guide-level level-warning">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5"/><path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                  EVALUACIÓN TÉCNICA · PRIORIDAD MEDIA
+                </span>
+              </div>
+              <h3>Fisura Más Gruesa que una Moneda (S/ 1)</h3>
+              <p>Si el canto de una moneda de S/ 1 ingresa en la abertura del muro, la fisura supera el umbral superficial y requiere evaluación fotográfica.</p>
+              <div class="guide-action-note">Protocolo: Triaje remoto mediante fotografías panorámica y de detalle.</div>
+            </div>
+
+            <div class="guide-card guide-safe">
+              <div class="guide-badge-row">
+                <span class="guide-level level-safe">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  DAÑO ESTÉTICO · BAJO RIESGO
+                </span>
+              </div>
+              <h3>Solo Caída de Tarrajeo o Pintura</h3>
+              <p>Desprendimiento superficial de revestimiento, yeso o fisuras finas sin comprometer columnas, vigas ni muros portantes.</p>
+              <div class="guide-action-note">Protocolo: Descarta falsa alarma y evita saturar las líneas de rescate.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         PANTALLA 2: FLUJO DE REPORTE DE EMERGENCIA EN 3 PASOS (MISMA PESTAÑA)
+         Paso 1: Mapa real (Maximizar/Minimizar, Buscar dirección, Usar mi ubicación)
+         Paso 2: Subir imágenes de vivienda y anomalía
+         Paso 3: Selección de tipos de daños observados
+         Bloqueo estricto: No avanza sin completar el paso actual.
+         ===================================================================== -->
+    <div id="view-report" class="app-view hidden" aria-label="Asistente de reporte de emergencia en 3 pasos">
+      <section class="section">
+        <div class="container">
+          <!-- Barra superior de retorno y progreso -->
+          <div class="screen-nav-bar">
+            <button type="button" class="btn btn-outline" data-view-target="home">
+              &larr; Regresar a la Página Principal
+            </button>
+            <span class="badge badge-red">REPORTE DE EMERGENCIA CIUDADANO</span>
+          </div>
+
+          <div class="workspace-shell">
+            <!-- Indicador Visual de 3 Pasos -->
+            <div class="wizard-steps-bar" role="list" aria-label="Pasos del reporte de emergencia">
+              <div class="step-pill active" id="step-indicator-1" role="listitem">
+                <span class="step-num">1</span>
+                <span>Ubicación en Mapa</span>
+              </div>
+              <div class="step-pill" id="step-indicator-2" role="listitem">
+                <span class="step-num">2</span>
+                <span>Fotos de Vivienda y Anomalía</span>
+              </div>
+              <div class="step-pill" id="step-indicator-3" role="listitem">
+                <span class="step-num">3</span>
+                <span>Tipo de Daños Observados</span>
+              </div>
+            </div>
+
+            <!-- Banner Offline si el usuario simuló corte de red -->
+            <div class="offline-banner hidden" id="citizen-offline-banner" role="status" aria-live="polite">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M1 1L23 23M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55A10.94 10.94 0 0 1 10.17 10.72M12 20H12.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <span><strong>Modo Offline Activo:</strong> Sin conexión a internet. Tu reporte se guardará localmente y se sincronizará automáticamente al recuperar señal.</span>
+            </div>
+
+            <!-- ===============================================================
+                 PASO 1: UBICACIÓN EN MAPA REAL INTERACTIVO
+                 =============================================================== -->
+            <div class="wizard-panel active" id="wizard-step-1">
+              <div class="panel-header">
+                <h2>Paso 1 de 3: Confirma la Ubicación Exacta de la Emergencia</h2>
+                <p>Busca tu dirección dentro del mapa, haz clic sobre tu vivienda o presiona <strong>"Usar mi ubicación"</strong> para detectarla automáticamente.</p>
+              </div>
+
+              <!-- Contenedor del Mapa Real (Soporta Maximizar / Minimizar) -->
+              <div class="real-map-wrapper" id="report-map-wrapper">
+                <!-- Controles integrados sobre el mapa: Búsqueda + Usar mi ubicación + Maximizar/Minimizar -->
+                <div class="map-overlay-toolbar">
+                  <form id="map-search-form" class="map-search-box" role="search">
+                    <label for="map-address-input" class="sr-only">Buscar dirección o distrito</label>
+                    <input
+                      type="text"
+                      id="map-address-input"
+                      placeholder="Buscar dirección (ej. Av. Arequipa, SJL, Miraflores...)"
+                      autocomplete="off"
+                    />
+                    <button type="submit" class="btn btn-institutional btn-sm">Buscar</button>
+                  </form>
+
+                  <div class="map-quick-buttons">
+                    <button type="button" id="btn-use-my-location" class="btn btn-success btn-sm">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3" fill="#FFFFFF"/>
+                        <path d="M12 2V5M12 19V22M2 12H5M19 12H22" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="12" cy="12" r="7" stroke="#FFFFFF" stroke-width="2.2"/>
+                      </svg>
+                      <span>Usar mi ubicación</span>
+                    </button>
+
+                    <button type="button" id="btn-toggle-map-size" class="btn btn-secondary btn-sm" aria-pressed="false">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M15 3H21V9M9 21H3V15M21 3L14 10M3 21L10 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span id="map-size-label">Maximizar Mapa</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Sugerencias rápidas de zonas de Lima -->
+                <div class="map-presets-bar" aria-label="Zonas rápidas de referencia">
+                  <span>Zonas rápidas:</span>
+                  <button type="button" class="preset-chip" data-lat="-12.0464" data-lng="-77.0428" data-label="Cercado de Lima · Plaza Mayor">Cercado de Lima</button>
+                  <button type="button" class="preset-chip" data-lat="-11.9884" data-lng="-77.0061" data-label="San Juan de Lurigancho · Canto Grande">S.J. Lurigancho</button>
+                  <button type="button" class="preset-chip" data-lat="-12.0653" data-lng="-77.0280" data-label="La Victoria · Av. Manco Cápac">La Victoria</button>
+                  <button type="button" class="preset-chip" data-lat="-12.2091" data-lng="-76.9412" data-label="Villa El Salvador · Sector 2">Villa El Salvador</button>
+                </div>
+
+                <!-- Lienzo del Mapa Leaflet -->
+                <div id="citizen-leaflet-map" class="leaflet-canvas" role="region" aria-label="Mapa interactivo de ubicación de emergencia"></div>
+              </div>
+
+              <!-- Barra de estado de ubicación confirmada -->
+              <div class="location-confirmation-bar" id="location-status-box">
+                <div class="location-info">
+                  <span class="badge badge-amber" id="location-badge">UBICACIÓN PENDIENTE</span>
+                  <p id="selected-address-text">Aún no has seleccionado una ubicación. Busca una dirección, haz clic en el mapa o pulsa "Usar mi ubicación".</p>
+                </div>
+                <span class="coords-pill" id="selected-coords-text">Lat: -- , Lng: --</span>
+              </div>
+
+              <div class="wizard-footer-single">
+                <button type="button" id="btn-to-step-2" class="btn btn-danger btn-massive btn-block" disabled>
+                  <span>CONFIRMAR UBICACIÓN Y CONTINUAR AL PASO 2 &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ===============================================================
+                 PASO 2: SUBIR IMÁGENES DE LA VIVIENDA Y DE LA ANOMALÍA
+                 =============================================================== -->
+            <div class="wizard-panel" id="wizard-step-2">
+              <div class="panel-header">
+                <h2>Paso 2 de 3: Sube las Imágenes de la Vivienda y de la Anomalía</h2>
+                <p>Para avanzar al último paso es obligatorio adjuntar ambas fotografías: una vista general de la vivienda y un acercamiento de la grieta o anomalía.</p>
+              </div>
+
+              <div class="dual-upload-grid">
+                <!-- Tarjeta 1: Imagen Panorámica de la Vivienda -->
+                <div class="upload-card" id="card-upload-house">
+                  <div class="upload-card-header">
+                    <span class="badge badge-blue">1. FOTO DE LA VIVIENDA</span>
+                    <span class="upload-state-tag pending" id="house-photo-status">Obligatoria</span>
+                  </div>
+                  <h3>Vista Panorámica de la Fachada</h3>
+                  <p>Permite evaluar inclinaciones, asentamientos o daños visibles en el exterior del inmueble.</p>
+
+                  <div class="viewfinder-box">
+                    <div class="house-silhouette" id="panoramic-guide-overlay">
+                      <svg width="220" height="145" viewBox="0 0 260 170" fill="none" aria-hidden="true">
+                        <path d="M25 80L130 15L235 80" stroke="#0056B3" stroke-width="3" stroke-dasharray="8 6"/>
+                        <rect x="48" y="80" width="164" height="78" stroke="#0056B3" stroke-width="3" stroke-dasharray="8 6"/>
+                        <rect x="112" y="110" width="36" height="48" stroke="#0056B3" stroke-width="2.5" stroke-dasharray="6 4"/>
+                      </svg>
+                      <span class="guide-caption">Sube la foto general de la vivienda</span>
+                    </div>
+                    <div id="panoramic-preview-area" class="photo-loaded hidden"></div>
+                  </div>
+
+                  <div class="upload-buttons-col">
+                    <label for="input-panoramic-file" class="btn btn-institutional btn-massive btn-block">
+                      <span>SUBIR FOTO DE VIVIENDA</span>
+                    </label>
+                    <input type="file" id="input-panoramic-file" accept="image/*" class="sr-only" />
+
+                    <button type="button" id="btn-sample-panoramic" class="btn btn-secondary btn-block">
+                      Usar imagen de ejemplo (Vivienda)
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tarjeta 2: Imagen de la Anomalía / Grieta -->
+                <div class="upload-card" id="card-upload-anomaly">
+                  <div class="upload-card-header">
+                    <span class="badge badge-red">2. FOTO DE LA ANOMALÍA</span>
+                    <span class="upload-state-tag pending" id="anomaly-photo-status">Opcional</span>
+                  </div>
+                  <h3>Detalle de Grieta o Daño Observado</h3>
+                  <p>Acércate con precaución sin entrar a zonas inestables para enfocar la fisura, columna o muro afectado.</p>
+
+                  <div class="viewfinder-box">
+                    <div class="house-silhouette" id="detail-guide-overlay">
+                      <svg width="190" height="145" viewBox="0 0 200 150" fill="none" aria-hidden="true">
+                        <rect x="25" y="15" width="150" height="120" rx="8" stroke="#D32F2F" stroke-width="3" stroke-dasharray="8 6"/>
+                        <path d="M90 35L105 65L88 95L108 120" stroke="#D32F2F" stroke-width="3"/>
+                      </svg>
+                      <span class="guide-caption">Sube la foto de la anomalía o grieta</span>
+                    </div>
+                    <div id="detail-preview-area" class="photo-loaded hidden"></div>
+                  </div>
+
+                  <div class="upload-buttons-col">
+                    <label for="input-detail-file" class="btn btn-institutional btn-massive btn-block">
+                      <span>SUBIR FOTO DE ANOMALÍA</span>
+                    </label>
+                    <input type="file" id="input-detail-file" accept="image/*" class="sr-only" />
+
+                    <button type="button" id="btn-sample-detail" class="btn btn-secondary btn-block">
+                      Usar imagen de ejemplo (Anomalía)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-requirement-notice" id="step2-requirement-msg">
+                 Sube la foto panorámica de la vivienda (obligatoria) para habilitar el Paso 3. La foto de detalle es opcional si la zona es peligrosa.
+              </div>
+
+              <div class="wizard-nav-row">
+                <button type="button" id="btn-back-to-1" class="btn btn-outline btn-massive">
+                  <span>&larr; PASO ANTERIOR</span>
+                </button>
+                <button type="button" id="btn-to-step-3" class="btn btn-danger btn-massive" disabled>
+                  <span>CONTINUAR AL PASO 3 &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ===============================================================
+                 PASO 3: SELECCIÓN DE TIPOS DE DAÑOS OBSERVADOS
+                 =============================================================== -->
+            <div class="wizard-panel" id="wizard-step-3">
+              <div class="panel-header">
+                <h2>Paso 3 de 3: Selecciona los Tipos de Daños que Observas</h2>
+                <p>Toca una o más tarjetas visuales que coincidan con los daños de tu inmueble. Si marcas <strong>"Solo caída de tarrajeo"</strong>, se desactivan las alertas críticas.</p>
+              </div>
+
+              <div class="visual-cards-grid" role="group" aria-label="Tipos de daños estructurales observados">
+                <button type="button" class="damage-card" data-damage="x_crack" aria-pressed="false">
+                  <span class="card-check-badge" aria-hidden="true">SELECCIONADO</span>
+                  <div class="damage-illustration"><img src="imagenes/imagen_grietaX.jpg" alt="Grieta en forma de X en un muro" loading="lazy" /></div>
+                  <strong class="damage-title">Grieta en forma de "X"</strong>
+                  <span class="damage-desc">Rajadura diagonal cruzada en columnas o muros principales.</span>
+                  <span class="damage-severity severity-red">PELIGRO DE COLAPSO</span>
+                </button>
+
+                <button type="button" class="damage-card" data-damage="exposed_rebar" aria-pressed="false">
+                  <span class="card-check-badge" aria-hidden="true">SELECCIONADO</span>
+                  <div class="damage-illustration"><img src="imagenes/imagen_columnas.jpg" alt="Columna con fierros expuestos" loading="lazy" /></div>
+                  <strong class="damage-title">Fierros internos expuestos</strong>
+                  <span class="damage-desc">Concreto reventado con acero o varillas visibles.</span>
+                  <span class="damage-severity severity-red">DAÑO ESTRUCTURAL</span>
+                </button>
+
+                <button type="button" class="damage-card" data-damage="coin_width" aria-pressed="false">
+                  <span class="card-check-badge" aria-hidden="true">SELECCIONADO</span>
+                  <div class="damage-illustration"><img src="imagenes/imagen_moneda.jpg" alt="Moneda de S/ 1 dentro de una fisura" loading="lazy" /></div>
+                  <strong class="damage-title">Fisura &gt; moneda de S/ 1</strong>
+                  <span class="damage-desc">La abertura permite introducir una moneda de S/ 1.</span>
+                  <span class="damage-severity severity-amber">RIESGO MODERADO/ALTO</span>
+                </button>
+
+                <button type="button" class="damage-card" data-damage="plaster_only" aria-pressed="false">
+                  <span class="card-check-badge" aria-hidden="true">SELECCIONADO</span>
+                  <div class="damage-illustration"><img src="imagenes/imagen_tarrajeo.jpg" alt="Desprendimiento de tarrajeo" loading="lazy" /></div>
+                  <strong class="damage-title">Solo caída de tarrajeo</strong>
+                  <span class="damage-desc">Desprendimiento superficial de pintura o revestimiento.</span>
+                  <span class="damage-severity severity-green">DAÑO ESTÉTICO</span>
+                </button>
+              </div>
+
+              <!-- Resumen del Reporte antes de enviar -->
+              <div class="summary-box" id="report-summary-box" aria-live="polite">
+                <h4>Resumen del Reporte a Enviar</h4>
+                <div class="summary-content" id="summary-dynamic-text">
+                  Selecciona al menos un tipo de daño observado arriba para habilitar el envío.
+                </div>
+              </div>
+
+              <div class="wizard-nav-row">
+                <button type="button" id="btn-back-to-2" class="btn btn-outline btn-massive">
+                  <span>&larr; PASO ANTERIOR</span>
+                </button>
+                <button type="button" id="btn-submit-report" class="btn btn-danger btn-massive" disabled>
+                  <span>ENVIAR REPORTE A DEFENSA CIVIL</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cola de reportes guardados Offline -->
+          <div class="offline-queue-box hidden" id="offline-queue-panel">
+            <div class="queue-header">
+              <strong>Cola de Sincronización Offline</strong>
+              <span id="offline-queue-count" class="badge badge-red">0 pendientes</span>
+            </div>
+            <p>Estos reportes están almacenados localmente en tu navegador. Activa "Red Activa" en la barra superior para transmitirlos automáticamente a Defensa Civil.</p>
+            <ul id="offline-queue-list" class="queue-list"></ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         PANTALLA 3: PANEL DEFENSA CIVIL (COE - INDECI) (MISMA PESTAÑA)
+         ===================================================================== -->
+    <div id="view-indeci" class="app-view hidden" aria-label="Dashboard Central de Defensa Civil">
+      <section class="section section-alt">
+        <div class="container">
+          <div class="screen-nav-bar">
+            <button type="button" class="btn btn-outline" data-view-target="home">
+              &larr; Regresar a la Página Principal
+            </button>
+            <div class="screen-nav-actions">
+              <button type="button" class="btn btn-success btn-sm" data-view-target="rescatista">
+                Ir a Consola de Brigadistas &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div class="section-heading">
+            <span class="section-tag">CENTRO DE OPERACIONES DE EMERGENCIA (COE - INDECI)</span>
+            <h2>Dashboard Central de Triaje Remoto en Tiempo Real</h2>
+            <p>
+              Visualiza todos los reportes enviados por los ciudadanos, filtra falsas alarmas estéticas y asigna brigadas de rescate a las zonas de riesgo vital.
+            </p>
+          </div>
+
+          <div class="coe-login-bar">
+            <div class="coe-auth-info">
+              <span class="badge badge-blue">SESIÓN INSTITUCIONAL INDECI</span>
+              <p>Operador activo: <strong>Coord. Rafael Luna (COE Lima)</strong> · Monitoreo sincronizado en tiempo real</p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" data-logout="coe">Cerrar sesión</button>
+          </div>
+
+          <div class="dashboard-shell" id="coe-dashboard-body">
+            <div class="coe-live-alert hidden" id="coe-live-alert" role="status" aria-live="polite">
+              <span><strong>Nuevo reporte ingresado:</strong> El mapa y la bandeja de triaje se actualizaron automáticamente.</span>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-dismiss-coe-alert">Entendido</button>
+            </div>
+            <!-- KPIs en vivo -->
+            <div class="kpi-strip">
+              <div class="kpi-card kpi-red">
+                <span class="kpi-title">Riesgo Inminente (Rojo)</span>
+                <strong class="kpi-num" id="kpi-critical-count">3</strong>
+                <span class="kpi-sub">Grieta en X / Fierros expuestos</span>
+              </div>
+              <div class="kpi-card kpi-amber">
+                <span class="kpi-title">Evaluación Moderada</span>
+                <strong class="kpi-num" id="kpi-moderate-count">1</strong>
+                <span class="kpi-sub">Fisura &gt; moneda S/ 1</span>
+              </div>
+              <div class="kpi-card kpi-green">
+                <span class="kpi-title">Falsas Alarmas Filtradas</span>
+                <strong class="kpi-num" id="kpi-false-count">2</strong>
+                <span class="kpi-sub">Solo caída de tarrajeo</span>
+              </div>
+              <div class="kpi-card kpi-blue">
+                <span class="kpi-title">Brigadas Asignadas</span>
+                <strong class="kpi-num" id="kpi-assigned-count">1</strong>
+                <span class="kpi-sub">Unidades en despliegue</span>
+              </div>
+            </div>
+
+            <!-- Herramientas de filtrado y exportación -->
+            <div class="dashboard-toolbar">
+              <div class="filter-group" role="group" aria-label="Filtros de triaje">
+                <button type="button" class="filter-btn active" data-filter="all">Todos los Reportes</button>
+                <button type="button" class="filter-btn" data-filter="critical">Solo Riesgo Vital</button>
+                <button type="button" class="filter-btn" data-filter="hide_false">Ocultar Falsas Alarmas</button>
+              </div>
+              <div class="view-group">
+                <button type="button" id="btn-toggle-heatmap" class="btn btn-outline btn-sm" aria-pressed="false">
+                  Activar Vista Heatmap
+                </button>
+                <button type="button" id="btn-export-csv" class="btn btn-institutional btn-sm">
+                  Exportar Reportes CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Mapa Real COE + Bandeja Priorizada + Inspector de Detalle -->
+            <div class="dashboard-main-grid">
+              <div class="map-container-card">
+                <div class="card-topbar">
+                  <h3>Mapa Georreferenciado de Incidencias</h3>
+                  <div class="map-legend">
+                    <span class="legend-item"><i class="dot dot-red"></i> Crítico</span>
+                    <span class="legend-item"><i class="dot dot-amber"></i> Moderado</span>
+                    <span class="legend-item"><i class="dot dot-green"></i> Estético</span>
+                    <span class="legend-item"><i class="dot dot-blue"></i> Asignado</span>
+                  </div>
+                </div>
+
+                <div class="coe-map-shell">
+                  <div id="coe-leaflet-map" class="coe-leaflet-canvas" role="region" aria-label="Mapa de emergencias Defensa Civil"></div>
+                  <div class="heatmap-layer hidden" id="heatmap-overlay" aria-hidden="true">
+                    <div class="heat-blob heat-1"></div>
+                    <div class="heat-blob heat-2"></div>
+                    <div class="heat-blob heat-3"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="triage-column">
+                <div class="triage-list-card">
+                  <div class="card-topbar">
+                    <h3>Bandeja de Triaje Priorizada</h3>
+                    <span class="badge badge-blue" id="triage-count-badge">6 reportes</span>
+                  </div>
+                  <div class="triage-list" id="triage-list-container" role="list"></div>
+                </div>
+
+                <div class="triage-detail-card" id="triage-detail-panel" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         PANTALLA 4: CONSOLA DE BRIGADISTAS / RESCATISTAS (MISMA PESTAÑA)
+         ===================================================================== -->
+    <div id="view-rescatista" class="app-view hidden" aria-label="Consola de campo para brigadistas y rescatistas">
+      <section class="section">
+        <div class="container">
+          <div class="screen-nav-bar">
+            <button type="button" class="btn btn-outline" data-view-target="home">
+              &larr; Regresar a la Página Principal
+            </button>
+            <div class="screen-nav-actions">
+              <button type="button" class="btn btn-institutional btn-sm" data-view-target="indeci">
+                Ver Panel Defensa Civil &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div class="section-heading">
+            <span class="section-tag">INGENIEROS CIVILES Y BRIGADISTAS DE RESCATE</span>
+            <h2>Consola de Validación In Situ y Ficha Digital EDAN</h2>
+            <p>
+              Interfaz diseñada para condiciones extremas en zona de desastre: botones de ancho completo operables con guantes gruesos y compatibilidad con Modo Alto Contraste solar.
+            </p>
+          </div>
+
+          <div class="rescuer-toolbar">
+            <div class="rescuer-status">
+              <span class="badge badge-green">BRIGADA USAR-04 · ACTIVA</span>
+              <span>Sincronizada con el registro de reportes de Defensa Civil</span>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" data-logout="resc">Cerrar sesión</button>
+            <button type="button" id="btn-rescuer-contrast" class="btn btn-outline btn-sm">
+              Alternar Modo Alto Contraste Solar
+            </button>
+          </div>
+          
+          <div class="offline-banner hidden" id="rescuer-offline-banner" role="status" aria-live="polite">
+            <strong>Trabajando en modo Offline:</strong> Visualizando reportes y fotos guardados en caché local.
+          </div>
+
+          <div class="rescuer-cards-grid" id="rescuer-tasks-container"></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="view-login-resc" class="app-view hidden" aria-label="Acceso para brigadistas">
+      <section class="login-section"><div class="container login-grid-page">
+        <div class="login-left">
+          <button type="button" class="link-back" data-view-target="home">&larr; Regresar a la Página Principal</button>
+          <div class="login-shield"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L4 5V11C4 16.55 7.41 21.74 12 23C16.59 21.74 20 16.55 20 11V5L12 2Z" stroke="#0056B3" stroke-width="2" stroke-linejoin="round"/><path d="M9 12L11 14L15 10" stroke="#0056B3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h2>Acceso para brigadistas</h2>
+          <p class="login-sub">Ingrese con sus credenciales institucionales.</p>
+          <div class="login-info"><strong>EvakuaPE · Modo campo</strong><span>Consulte evidencia, verifique daños y sincronice sus reportes con el COE.</span></div>
+        </div>
+        <form class="login-card" id="form-login-resc" novalidate>
+          <label for="login-resc-user">Usuario / DNI</label>
+          <div class="field"><input id="login-resc-user" type="text" placeholder="00000000" autocomplete="username" inputmode="numeric" maxlength="8" /></div>
+          <label for="login-resc-pass">Contraseña</label>
+          <div class="field"><input id="login-resc-pass" type="password" placeholder="••••••••••" autocomplete="current-password" /><button type="button" class="eye-btn" data-toggle-pass="login-resc-pass" aria-label="Mostrar u ocultar contraseña">&#128065;</button></div>
+          <p class="login-error hidden" id="login-resc-error" role="alert"></p>
+          <button type="submit" class="btn btn-institutional btn-massive btn-block"><span>&#128274; INICIAR SESIÓN</span></button>
+          <div class="login-note"><strong>Acceso reservado al personal autorizado</strong><span>Credenciales de demostración: DNI <code>12345678</code> · Contraseña <code>Brigada2026</code></span></div>
+        </form>
+      </div></section>
+    </div>
+
+    <div id="view-login-coe" class="app-view hidden" aria-label="Acceso COE · INDECI">
+      <section class="login-section"><div class="container login-grid-page">
+        <div class="login-left">
+          <button type="button" class="link-back" data-view-target="home">&larr; Regresar a la Página Principal</button>
+          <div class="login-shield"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L4 5V11C4 16.55 7.41 21.74 12 23C16.59 21.74 20 16.55 20 11V5L12 2Z" stroke="#0056B3" stroke-width="2" stroke-linejoin="round"/><path d="M9 12L11 14L15 10" stroke="#0056B3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h2>Acceso COE · INDECI</h2>
+          <p class="login-sub">Ingrese con su cuenta institucional del Centro de Operaciones de Emergencia.</p>
+          <div class="login-info"><strong>EvakuaPE · Centro de Operaciones</strong><span>Monitoree reportes, priorice el triaje y asigne brigadas de rescate.</span></div>
+        </div>
+        <form class="login-card" id="form-login-coe" novalidate>
+          <label for="login-coe-user">Correo institucional</label>
+          <div class="field"><input id="login-coe-user" type="email" placeholder="usuario@indeci.gob.pe" autocomplete="username"  /></div>
+          <label for="login-coe-pass">Contraseña</label>
+          <div class="field"><input id="login-coe-pass" type="password" placeholder="••••••••••" autocomplete="current-password" /><button type="button" class="eye-btn" data-toggle-pass="login-coe-pass" aria-label="Mostrar u ocultar contraseña">&#128065;</button></div>
+          <p class="login-error hidden" id="login-coe-error" role="alert"></p>
+          <button type="submit" class="btn btn-institutional btn-massive btn-block"><span>&#128274; INICIAR SESIÓN</span></button>
+          <div class="login-note"><strong>Acceso reservado al personal autorizado</strong><span>Credenciales de demostración: <code>rluna@indeci.gob.pe</code> · <code>COE2026</code></span></div>
+        </form>
+      </div></section>
+    </div>
+  </main>
+
+  <!-- =====================================================================
+       MODAL 1: TEMPORIZADOR DE CANCELACIÓN DE 5 SEGUNDOS
+       ===================================================================== -->
+  <div class="fullscreen-modal fs-page hidden" id="modal-countdown" role="dialog" aria-modal="true" aria-labelledby="countdown-title">
+    <div class="fs-top"><div class="container"><img class="fs-logo" src="iconos/logo_evakuaPE.svg" alt="EvakuaPE" /><span class="fs-tag">Confirmación</span></div></div>
+    <div class="container fs-body">
+      <h2 id="countdown-title" class="fs-h">Enviando reporte en…</h2>
+      <p class="fs-sub">Revise el resumen. Puede cancelar antes del envío.</p>
+      <div class="cd-grid">
+        <div class="countdown-circle" aria-live="assertive"><span id="countdown-number">5</span><span class="cd-unit">&nbsp;s</span></div>
+        <div>
+          <div class="cd-photos">
+            <figure><img id="cd-house" alt="Foto panorámica" /><figcaption>Panorámica</figcaption></figure>
+            <figure><img id="cd-anomaly" alt="Foto de detalle" /><figcaption>Detalle</figcaption></figure>
+          </div>
+          <div class="cd-summary" id="cd-summary"></div>
+        </div>
+      </div>
+      <button type="button" id="btn-cancel-countdown" class="cd-cancel"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6L18 18" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg><span>CANCELAR ENVÍO</span></button>
+      <div class="cd-note"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7V12L15 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><strong>El envío aún no se ha realizado</strong><span>Si no hay red, el reporte quedará guardado localmente.</span></div></div>
+    </div>
+  </div>
+
+  
+<!-- =====================================================================
+       MODAL 2: FEEDBACK DE PANTALLA COMPLETA AL FINALIZAR EL REPORTE
+       ===================================================================== -->
+  <div class="fullscreen-modal fs-page hidden" id="modal-feedback" role="alertdialog" aria-modal="true" aria-labelledby="feedback-title">
+    <div id="feedback-modal-surface" class="fb-surface">
+      <div class="fb-head"><div class="container">
+        <div class="fb-logo"><img src="iconos/logo_evakuaPE.svg" alt="EvakuaPE" /></div>
+        <div class="fb-title-row"><div class="fb-icon" id="feedback-icon-wrap" aria-hidden="true"></div>
+          <div><h2 id="feedback-title">Título</h2><p id="feedback-instruction"></p></div></div>
+      </div></div>
+      <div class="container fb-body" id="feedback-content"></div>
+    </div>
+  </div>
+
+  
+<!-- =====================================================================
+       FOOTER MODERNO DE PÁGINA WEB ACTUAL
+       ===================================================================== -->
+       
+       <!-- Toast de sincronización exitosa (HU-13) -->
+  <div id="sync-toast" class="sync-toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- Loader animado de guardado offline (HU-44) -->
+  <div id="modal-offline-loader" class="fullscreen-modal hidden" role="status" aria-live="assertive">
+    <div class="modal-box offline-loader-box">
+      <div id="offline-spinner" class="loader-spinner" aria-hidden="true"></div>
+      <div id="offline-check" class="loader-check hidden" aria-hidden="true">&#10003;</div>
+      <h3 id="offline-loader-text">Guardando reporte localmente...</h3>
+    </div>
+  </div>
+
+  <!-- Modal de zoom para fotografías COE (HU-19 / HU-20) -->
+  <div id="modal-photo-zoom" class="fullscreen-modal hidden" role="dialog" aria-modal="true" aria-label="Vista ampliada de evidencia">
+    <div class="modal-box photo-zoom-box">
+      <div class="card-topbar" style="width:100%;">
+        <h3 id="zoom-photo-title">Evidencia Fotográfica</h3>
+        <button type="button" id="btn-close-zoom" class="btn btn-danger btn-sm">Cerrar &times;</button>
+      </div>
+      <img id="zoom-photo-img" src="" alt="Evidencia ampliada" />
+    </div>
+  </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="footer-logo"><span class="footer-logo-box"><img src="iconos/logo_evakuaPE.svg" alt="EvakuaPE by SismoTech" /></span></div>
+          <p>
+            Plataforma tecnológica de evaluación visual post-sísmica y coordinación de emergencias para salvaguardar vidas en el Perú.
+          </p>
+          <div class="social-links" aria-label="Redes sociales de SismoTech">
+            <a href="#inicio" class="social-btn" aria-label="Facebook de EvakuaPE" data-view-target="home"><img src="iconos/facebook.svg" alt="" width="22" height="22" /></a>
+            <a href="#inicio" class="social-btn" aria-label="Instagram de EvakuaPE" data-view-target="home"><img src="iconos/instagram.svg" alt="" width="22" height="22" /></a>
+            <a href="#inicio" class="social-btn" aria-label="X (Twitter) de EvakuaPE" data-view-target="home"><img src="iconos/twiter.svg" alt="" width="22" height="22" /></a>
+            <a href="#inicio" class="social-btn" aria-label="YouTube de EvakuaPE" data-view-target="home"><img src="iconos/youtube.svg" alt="" width="22" height="22" /></a>
+            </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Plataforma</h4>
+          <ul>
+            <li><button type="button" data-view-target="home" data-scroll="inicio">Inicio</button></li>
+            <li><button type="button" data-view-target="report">Reportar Emergencia</button></li>
+            <li><button type="button" data-view-target="indeci">Panel Defensa Civil (COE)</button></li>
+            <li><button type="button" data-view-target="rescatista">Consola de Brigadistas</button></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Información y Ayuda</h4>
+          <ul>
+            <li><button type="button" data-view-target="home" data-scroll="guia-visual">Guía de Triaje Visual</button></li>
+            <li><button type="button" data-view-target="home" data-scroll="problema">Prevención Sísmica</button></li>
+            <li><a href="mailto:contacto@evakuape.pe">contacto@evakuape.pe</a></li>
+            <li><span>Línea de Emergencia Nacional: <strong>119</strong></span></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#inicio" data-view-target="home">Términos y Condiciones</a></li>
+            <li><a href="#inicio" data-view-target="home">Política de Privacidad</a></li>
+            <li><a href="#inicio" data-view-target="home">Tratamiento de Datos Geográficos</a></li>
+            <li><a href="#inicio" data-view-target="home">Accesibilidad Web</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <p>&copy; 2026 SismoTech — EvakuaPE. Todos los derechos reservados.</p>
+        <p>Lima, Perú · Tecnología ciudadana al servicio de la gestión del riesgo de desastres.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS para mapa interactivo real -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <!-- Nota: En estructura de carpetas de repositorio (pages/index.html), usar src="../js/main.js" -->
+  <script src="main.js"></script>
+</body>
+</html>
